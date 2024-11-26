@@ -13,7 +13,7 @@ include 'db_connect.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor's Dashboard</title>
+    <title>Dashboard</title>
     <style>
         /* Add spacing around the entire page */
         body {
@@ -43,6 +43,7 @@ include 'db_connect.php';
         .menu {
             display: flex;
             gap: 15px;
+            align: right ;
         }
 
         .menu-btn {
@@ -151,7 +152,7 @@ include 'db_connect.php';
             margin-bottom: 10px;
         }
 
-        .patient-info-table, .prescription-log-table, .med-info-table {
+        .patient-info-table, .prescription-log-table, .med-info-table, .timed-medications-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
@@ -159,7 +160,8 @@ include 'db_connect.php';
 
         .patient-info-table th, .patient-info-table td,
         .prescription-log-table th, .prescription-log-table td,
-        .med-info-table th, .med-info-table td {
+        .med-info-table th, .med-info-table td,
+        .timed-medications-table th, .timed-medications-table td {
             padding: 12px;
             text-align: left;
             font-size: 0.95em;
@@ -181,15 +183,22 @@ include 'db_connect.php';
             color: #333;
         }
 
+        .timed-medications-table th {
+            background-color: #e6f7e6;
+            color: #333
+        }
+
         .patient-info-table tr:nth-child(even),
         .med-info-table tr:nth-child(even),
-        .prescription-log-table tr:nth-child(even) {
+        .prescription-log-table tr:nth-child(even),
+        .timed-medications-table tr:nth-child(even) {
             background-color: #f9f9f9;
         }
 
         .patient-info-table tr:hover,
         .med-info-table tr:hover,
-        .prescription-log-table tr:hover {
+        .prescription-log-table tr:hover,
+        .timed-medications-table tr:hover {
             background-color: #f1f1f1;
         }
 
@@ -222,7 +231,7 @@ include 'db_connect.php';
             gap: 10px;
         }
 
-        .add-patient-btn {
+        .add-patient-btn, .add-timed-btn {
             display: inline-block ;
             background-color: #4CAF50;
             margin:  10px ;
@@ -232,6 +241,13 @@ include 'db_connect.php';
             display: inline-block ;
             background-color: #4CAF50;
             margin:  10px ;
+        }
+
+        #timediv {
+            flex: 1; /* Allocates space for time */
+            text-align: right; /* Aligns time to the right */
+            font-size: 18px;
+            margin: 10px;
         }
 
         .delete-button {
@@ -252,7 +268,8 @@ include 'db_connect.php';
 
         // Show the selected section
         document.getElementById(sectionId).style.display = 'block';
-    }
+        }
+
         //function for dispensing and deleting entries
         function confirmDispense() {
             return confirm("Are you sure you want to Dispense.");
@@ -342,79 +359,94 @@ include 'db_connect.php';
         setInterval(checkStatus, 2000);
         checkStatus();
     </script>
+    <script>
+        var interval = setInterval(timestamphome, 1000);
+        function timestamphome(){
+        var date;
+        date = new Date(); 
+        var time = document.getElementById('timediv'); 
+        time.innerHTML = date.toLocaleTimeString();
+        }
+    </script>
 </head>
+
 <body>
+    <header>
+        <h2>Welcome, Dr. <?php echo htmlspecialchars($_SESSION['doctor_name']); ?></h2>
+        <br></br>
+        <div class="menu">
+            <button class="menu-btn" onclick="showSection('patient-info')">Patient Info</button>
+            <button class="menu-btn" onclick="showSection('medications')">Medications</button>
+            <button class="menu-btn" onclick="showSection('prescription-log')">Prescription Log</button>
+            <button class="menu-btn" onclick="showSection('timed-medications')">Timed Medications</button>
+        </div>
 
-<header>
-    <h2>Welcome, Dr. <?php echo htmlspecialchars($_SESSION['doctor_name']); ?></h2>
-    <div class="menu">
-        <button class="menu-btn" onclick="showSection('patient-info')">Patient Info</button>
-        <button class="menu-btn" onclick="showSection('medications')">Medications</button>
-        <button class="menu-btn" onclick="showSection('prescription-log')">Prescription Log</button>
+        <div id="timediv" class="time">
+            22:07:39
+        </div>
+        <a href="logout.php">
+            <button class="logout-btn">Logout</button>
+        </a>
+    </header>
+
+    <div class="status-container">
+        <div id="machine-status" class="status status-checking">
+            <span>Checking...</span>
+            <div class="spinner"></div>
+        </div>
     </div>
-    
-    <a href="logout.php">
-        <button class="logout-btn">Logout</button>
-    </a>
-</header>
 
-<div class="status-container">
-    <div id="machine-status" class="status status-checking">
-        <span>Checking...</span>
-        <div class="spinner"></div>
-    </div>
-</div>
+    <div class="container">
+        <div id="patient-info" class="section">
+            <h3>Patient Information</h3>
+                <input type="text" id="search" placeholder="Search patient by name" onkeyup="searchPatient()" style="padding: 8px; width: 250px; font-size: 1em;">
+                <br><br>
+                <table class="patient-info-table" id="patientTable">
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Patient Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Action</th>
+                    </tr>
 
-<div class="container">
-    <div id="patient-info" class="section">
-        <h3>Patient Information</h3>
-            <input type="text" id="search" placeholder="Search patient by name" onkeyup="searchPatient()" style="padding: 8px; width: 250px; font-size: 1em;">
-            <br><br>
-            <table class="patient-info-table" id="patientTable">
-                <tr>
-                    <th>Patient ID</th>
-                    <th>Patient Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Action</th>
-                </tr>
+                    <?php
+                    $sql = " SELECT patient_data.*, GROUP_CONCAT(medications.medication_name SEPARATOR ', ') AS medications
+                    FROM patient_data
+                    LEFT JOIN patient_medications ON patient_data.id = patient_medications.patient_id
+                    LEFT JOIN medications ON patient_medications.medication_id = medications.medication_id
+                    GROUP BY patient_data.id";
+                    $result = $conn->query($sql);
 
-                <?php
-                $sql = " SELECT patient_data.*, GROUP_CONCAT(medications.medication_name SEPARATOR ', ') AS medications
-                FROM patient_data
-                LEFT JOIN patient_medications ON patient_data.id = patient_medications.patient_id
-                LEFT JOIN medications ON patient_medications.medication_id = medications.medication_id
-                GROUP BY patient_data.id";
-                $result = $conn->query($sql);
-
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>
-                                <td>{$row['id']}</td>
-                                <td>{$row['patient_name']}</td>
-                                <td>{$row['age']}</td>
-                                <td>{$row['gender']}</td>
-                                <td class='button-group'>
-                                    <form action='dispense_meds.php' method='POST' style='display: inline;'>
-                                        <input type='hidden' name='patient_id' value='{$row['id']}'>
-                                        <button type='submit' class='dispense-btn'>Dispense Medication</button>
-                                    </form>
-                                    <a href='edit_patient.php?id={$row['id']}'>
-                                        <button class='edit-btn'>Edit</button>
-                                    </a>
-                                </td>
-                            </tr>";
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>
+                                    <td>{$row['id']}</td>
+                                    <td>{$row['patient_name']}</td>
+                                    <td>{$row['age']}</td>
+                                    <td>{$row['gender']}</td>
+                                    <td class='button-group'>
+                                        <form action='dispense_meds.php' method='POST' style='display: inline;'>
+                                            <input type='hidden' name='patient_id' value='{$row['id']}'>
+                                            <button type='submit' class='dispense-btn'>Dispense Medication</button>
+                                        </form>
+                                        <form action='edit_patient.php' method='GET' style='display: inline;'>
+                                            <input type='hidden' name='id' value='{$row['id']}'>
+                                            <button type='submit' class='edit-btn'>Edit</button>
+                                        </form>
+                                    </td>
+                                </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5'>No records found</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='7'>No records found</td></tr>";
-                }
-                ?>
-            </table>
-            <td class='button-group2'>
-                <form action="add_patient.php" style='display: inline'>
-                    <button class="add-patient-btn">Add New Patient</button>
-                </form>                 
-            </td>
+                    ?>
+                </table>
+                <td class='button-group2'>
+                    <form action="add_patient.php" style='display: inline'>
+                        <button class="add-patient-btn">Add New Patient</button>
+                    </form>                 
+                </td>
         </div>
 
         <div id="medications" class="section" style="display: none;">
@@ -427,7 +459,6 @@ include 'db_connect.php';
                         <th>Action</th>
                     </tr>
                     <?php
-                    // Query to fetch medication data
                     $sql = "SELECT 
                                 medications.medication_id, 
                                 medications.medication_name, 
@@ -446,24 +477,24 @@ include 'db_connect.php';
                                     <td>{$row['medication_name']}</td>
                                     <td>{$row['mgpdosage']} mg</td>
                                     <td class='button-group'>
-                                        <a href='edit_medication.php?id=" . htmlspecialchars($row['medication_id']) . "'>
-                                            <button class='edit-btn'>Edit</button>
-                                        </a>
+                                        <form action='edit_medication.php' method='GET' style='display: inline;'>
+                                            <input type='hidden' name='id' value='{$row['medication_id']}'>
+                                            <button type='submit' class='edit-btn'>Edit</button>
+                                        </form>
                                     </td>
                                 </tr>";
                         }
-                    } else {
-                        echo "<tr><td colspan='5'>No medications found</td></tr>";
+                    } 
+                    else {
+                            echo "<tr><td colspan='4'>No medications found</td></tr>";
                     }
                     ?>
                 </table>
-                
-            </div>
-
+        </div>    
+        
         <div id="prescription-log" class="section" style="display: none;">
             <h3>Prescription Log</h3>
-                <input type="text" id="patient-name" placeholder="Search log by patient name" onkeyup="searchPrescription()" style="padding: 8px; width: 250px; font-size: 1em;">
-
+            <input type="text" id="patient-name" placeholder="Search log by patient name" onkeyup="searchPrescription()" style="padding: 8px; width: 250px; font-size: 1em;">
             <!-- Prescription Log Table -->
             <table class="prescription-log-table" id="prescriptionTable">
                 <tr>
@@ -472,41 +503,86 @@ include 'db_connect.php';
                     <th>Dosage</th>
                     <th>Prescribed By</th>
                     <th>Date & Time</th>
+                    <th>Response</th>
                     <th>Action</th>
                 </tr>
-                    <?php
-                    include 'db_connect.php'; // Ensure database connection
+                <?php
+                include 'db_connect.php'; // Ensure database connection
 
-                    // Base SQL query
-                    $sql = "SELECT dispensations.*, patient_data.patient_name, doctors.doctor_name 
+                // Base SQL query
+                $sql = "SELECT dispensations.*, patient_data.patient_name, doctors.doctor_name 
                         FROM dispensations
                         JOIN patient_data ON dispensations.patient_id = patient_data.id
                         JOIN doctors ON dispensations.doctor_id = doctors.doctor_id
                         ORDER BY dispensations.dispense_date DESC";
 
-                    $result = $conn->query($sql);
+                $result = $conn->query($sql);
 
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo "<tr>
-                                    <td>{$row['patient_name']}</td>
-                                    <td>{$row['medication_name']}</td>
-                                    <td>{$row['dosage']}</td>
-                                    <td>Dr. {$row['doctor_name']}</td>
-                                    <td>{$row['dispense_date']}</td>
-                                    <td>
-                                        <form action='delete_prescription.php' method='POST' style='display: inline;' onsubmit='return confirmDelete();'>
-                                            <input type='hidden' name='dispense_id' value='{$row['dispense_id']}'>
-                                            <button type='submit' class='delete-button'>Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='6'>No prescriptions found</td></tr>";
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>
+                                <td>{$row['patient_name']}</td>
+                                <td>{$row['medication_name']}</td>
+                                <td>{$row['dosage']}</td>
+                                <td>Dr. {$row['doctor_name']}</td>
+                                <td>{$row['dispense_date']}</td>
+                                <td>{$row['response_message']}</td>
+                                <td>
+                                    <form action='delete_prescription.php' method='POST' style='display: inline;' onsubmit='return confirmDelete();'>
+                                        <input type='hidden' name='dispense_id' value='{$row['dispense_id']}'>
+                                        <button type='submit' class='delete-button'>Delete</button>
+                                    </form>
+                                </td>
+                            </tr>";
                     }
-                    ?>
+                } else {
+                    echo "<tr><td colspan='7'>No prescriptions found</td></tr>";
+                }
+                ?>
             </table>
+        </div>
+
+        <div id="timed-medications" class="section" style="display: none;">
+            <h3>Timed Medication</h3>
+            <table class="timed-medications-table" id="timedmedsTable">
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Medication Name</th>
+                    <th>Dosage</th>
+                    <th>Time to dispense</th>
+                </tr>
+                <?php
+                $sql = "SELECT 
+                            p.patient_name,
+                            m.medication_name,
+                            pm.custom_dosage AS dosage,
+                            pm.set_time AS dispense_time
+                        FROM patient_medications pm
+                        JOIN patient_data p ON pm.patient_id = p.id
+                        JOIN medications m ON pm.medication_id = m.medication_id
+                        ORDER BY p.patient_name, m.medication_name";
+                $result = $conn->query($sql);
+                
+                if ($result && $result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>
+                                <td>{$row['patient_name']}</td>
+                                <td>{$row['medication_name']}</td>
+                                <td>{$row['dosage']} mg</td>
+                                <td>{$row['dispense_time']}</td>
+                            </tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='4'>No timed medications found.</td></tr>";
+                }
+                ?>
+            </table>
+            <td class='button-group2'>
+                <form action="add_timed.php" style='display: inline'>
+                    <button class="add-timed-btn">Add New Timed Medications</button>
+                </form>
+            </td>
+            
         </div>
     </div>
 </body>

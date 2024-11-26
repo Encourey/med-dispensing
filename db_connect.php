@@ -81,20 +81,20 @@ if ($patientDataResult && $patientDataResult->num_rows > 0) {
     echo "Patient not found.<br>";
 }
 
-//connect data between table
+//connect data between patient medication , patient data and medication
 $query = "
     SELECT 
-        patient_data.patient_name,
-        patient_medications.patient_id,
-        patient_medications.medication_id
+        pm.record_id,
+        p.patient_name,
+        m.medication_name,
+        pm.custom_dosage,
+        pm.set_time
     FROM 
-        patient_medications
+        patient_medications pm
     JOIN 
-        patient_data
-    ON 
-        patient_medications.patient_id = patient_data.id
-    ORDER BY
-        patient_data.id
+        patient_data p ON pm.patient_id = p.id
+    JOIN 
+        medications m ON pm.medication_id = m.medication_id
 ";
-
+$conn->query($query);
 ?>

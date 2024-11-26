@@ -1,0 +1,86 @@
+[
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 404, Not found: \/dispense"
+    },
+    {
+        "medication_id": "3",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 404, Not found: \/dispense"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 404, Not found: \/dispense"
+    }
+][][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 404, Not found: \/dispense"
+    },
+    {
+        "medication_id": "3",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 404, Not found: \/dispense"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 404, Not found: \/dispense"
+    },
+    {
+        "medication_id": "3",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 404, Not found: \/dispense"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 200, Dispense SUCCESS for multiple IDs"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 200, Dispense SUCCESS for multiple IDs"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 400, Missing arguments"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 400, Missing arguments"
+    },
+    {
+        "medication_id": "3",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 400, Missing arguments"
+    },
+    {
+        "medication_id": "6",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 400, Missing arguments"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 200, Dispense SUCCESS for multiple IDs"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response: HTTP 200, Dispense SUCCESS for multiple IDs"
+    }
+][]

@@ -1,0 +1,13 @@
+[
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response Error: Dispense SUCCESS for multiple IDs"
+    }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "ESP32 Response Error: Dispense SUCCESS for multiple IDs"
+    }
+]

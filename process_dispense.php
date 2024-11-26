@@ -15,8 +15,11 @@ $medication_ids = $_POST['medication_ids']; // Array of selected medication IDs
 $dosages = $_POST['dosages']; // Associative array with medication_id => dosage
 
 // ESP32 IP Address
-$esp32_ip = "192.168.1.56"; // Replace with your ESP32's IP address
+$esp32_ip = "192.168.1.51"; // Replace with your ESP32's IP address
 
+$responseLog = []; // Array to store responses for each medication
+
+// Process regular medications
 foreach ($medication_ids as $medication_id) {
     // Fetch medication details
     $medQuery = $conn->prepare("SELECT medication_name, mgpdosage FROM medications WHERE medication_id = ?");
@@ -30,29 +33,15 @@ foreach ($medication_ids as $medication_id) {
     $selected_dosage = $dosages[$medication_id];
     $total_dosage = $mgpdosage * $selected_dosage;
 
-    // Update patient_medications table
-    $checkQuery = $conn->prepare("SELECT * FROM patient_medications WHERE patient_id = ? AND medication_id = ?");
-    $checkQuery->bind_param("ii", $patient_id, $medication_id);
-    $checkQuery->execute();
-    $checkResult = $checkQuery->get_result();
-
-    if ($checkResult->num_rows === 0) {
-        $insertPatMed = $conn->prepare("INSERT INTO patient_medications (patient_id, medication_id) VALUES (?, ?)");
-        $insertPatMed->bind_param("ii", $patient_id, $medication_id);
-        $insertPatMed->execute();
-        $insertPatMed->close();
-    }
-
-    $checkQuery->close();
-
-    // Log into dispensations table
     $dispenseQuery = $conn->prepare(
-        "INSERT INTO dispensations (doctor_id, patient_id, medication_name, dosage, dispense_date) 
-         VALUES (?, ?, ?, ?, NOW())"
+        "INSERT INTO dispensations (doctor_id, patient_id, medication_name, dosage, dispense_date, response_message) 
+         VALUES (?, ?, ?, ?, NOW(), ?)"
     );
-    $dispenseQuery->bind_param("iiss", $doctor_id, $patient_id, $medication_name, $total_dosage);
+    $dispenseQuery->bind_param("iisss", $doctor_id, $patient_id, $medication_name, $total_dosage, $response);
     $dispenseQuery->execute();
     $dispenseQuery->close();
+
+    // $checkQuery->close();
 
     // Communicate with ESP32 to dispense medication
     $url = "http://$esp32_ip/dispense";
@@ -69,15 +58,56 @@ foreach ($medication_ids as $medication_id) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
-    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if (curl_errno($ch)) {
+        // Error occurred during connection
+        $error_message = curl_error($ch);
+        $responseLog[] = [
+            'medication_id' => $medication_id,
+            'status' => 'failure',
+            'message' => "Curl Error: " . htmlentities($error_message)
+        ];
+    } else {
+        // Get HTTP Status Code
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($http_status == 200) {
+            // Assuming ESP32 returns JSON response
+            $decodedResponse = json_decode($response, true); // Decode JSON response from ESP32
+
+            if ($decodedResponse && $decodedResponse['status'] == 'success') {
+                $responseLog[] = [
+                    'medication_id' => $medication_id,
+                    'status' => 'success',
+                    'message' => "ESP32 confirmed dispensing!"
+                ];
+            } else {
+                $responseLog[] = [
+                    'medication_id' => $medication_id,
+                    'status' => 'failure',
+                    'message' => "ESP32 Response Error: " . htmlentities($response)
+                ];
+            }
+        } else {
+            // If HTTP Status is not 200, log error
+            $responseLog[] = [
+                'medication_id' => $medication_id,
+                'status' => 'failure',
+                'message' => "ESP32 Response: HTTP $http_status, " . htmlentities($response)
+            ];
+        }
+    }
 
     curl_close($ch);
 
-    if ($http_status == 200 && trim($response) == "SUCCESS") {
-        echo "ESP32 confirmed dispensing!";
-    } else {
-        echo "Failed to communicate with ESP32 for medication ID: $medication_id.";
-    }
+    // Save dispense log to database
+    $dispenseQuery = $conn->prepare(
+        "INSERT INTO dispensations (doctor_id, patient_id, medication_name, dosage, dispense_date, response_message) 
+         VALUES (?, ?, ?, ?, NOW(), ?)"
+    );
+    $dispenseQuery->bind_param("iisss", $doctor_id, $patient_id, $medication_name, $total_dosage, $response);
+    $dispenseQuery->execute();
+    $dispenseQuery->close();
 }
 
 // Update patient_data table
@@ -87,9 +117,14 @@ $updatePatient = $conn->prepare(
          medication_dispensed = COALESCE(medication_dispensed, 0) + 1 
      WHERE id = ?"
 );
+
 $updatePatient->bind_param("i", $patient_id);
 $updatePatient->execute();
 $updatePatient->close();
+
+// Save responses for debugging or display in JSON format
+$_SESSION['dispense_responses'] = $responseLog;
+file_put_contents("esp32_log.json", json_encode($responseLog, JSON_PRETTY_PRINT), FILE_APPEND);
 
 // Redirect to the dashboard with a success message
 header("Location: docmain.php?dispense=success");
