@@ -330,32 +330,64 @@ include 'db_connect.php';
             xhr.send();
         }
 
+        let lastKnownStatus = "";
         async function checkStatus() {
             const statusElement = document.getElementById('machine-status');
-            try {
-                const response = await fetch('check_status.php'); // Adjust the path if needed
-                console.log("Response status:", response.status);
+            const dispenseButtons = document.querySelectorAll('.dispense-btn');
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
+            try {
+                const response = await fetch('check_status.php');
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
                 const data = await response.json();
-                console.log("Response body:", data);
+                const currentStatus = data.status;
 
-                if (data.status === "enabled") {
-                    statusElement.textContent = "Machine is Enabled";
-                    statusElement.style.color = "green";
-                } else {
-                    statusElement.textContent = "Machine is Disabled";
-                    statusElement.style.color = "red";
+                // Only update DOM if status actually changed
+                if (currentStatus !== lastKnownStatus) {
+                    lastKnownStatus = currentStatus;
+
+                    if (currentStatus === "enabled") {
+                        statusElement.textContent = "Machine is Enabled";
+                        statusElement.style.color = "green";
+                        dispenseButtons.forEach(btn => {
+                            btn.disabled = false;
+                            btn.style.opacity = "1";
+                            btn.style.cursor = "pointer";
+                        });
+
+                    } else if (currentStatus === "disabled") {
+                        statusElement.textContent = "Machine is Disabled";
+                        statusElement.style.color = "red";
+                        dispenseButtons.forEach(btn => {
+                            btn.disabled = true;
+                            btn.style.opacity = "0.5";
+                            btn.style.cursor = "not-allowed";
+                        });
+                    } else {
+                        statusElement.textContent = "Unknown Status";
+                        statusElement.style.color = "orange";
+                        dispenseButtons.forEach(btn => {
+                            btn.disabled = true;
+                            btn.style.opacity = "0.5";
+                            btn.style.cursor = "not-allowed";
+                        });
+                    }
                 }
+
             } catch (error) {
-                console.error("Error connecting to the server:", error);
-                statusElement.textContent = "Error Connecting";
-                statusElement.style.color = "gray";
+                if (lastKnownStatus !== "error") {
+                    lastKnownStatus = "error";
+                    statusElement.textContent = "Error Connecting";
+                    statusElement.style.color = "gray";
+                    dispenseButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.style.opacity = "0.5";
+                        btn.style.cursor = "not-allowed";
+                    });
+                }
             }
         }
+
         setInterval(checkStatus, 2000);
         checkStatus();
     </script>
@@ -428,7 +460,7 @@ include 'db_connect.php';
                                     <td class='button-group'>
                                         <form action='dispense_meds.php' method='POST' style='display: inline;'>
                                             <input type='hidden' name='patient_id' value='{$row['id']}'>
-                                            <button type='submit' class='dispense-btn'>Dispense Medication</button>
+                                            <button type='submit' class='dispense-btn' disabled style='opacity: 0.5; cursor: not-allowed;'>Dispense Medication</button>
                                         </form>
                                         <form action='edit_patient.php' method='GET' style='display: inline;'>
                                             <input type='hidden' name='id' value='{$row['id']}'>

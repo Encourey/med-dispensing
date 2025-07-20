@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['patient_id'])) {
-    header("Location: patmain.html");
+    header("Location: patmain.php");
     exit();
 }
 ?>

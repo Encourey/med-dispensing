@@ -107,6 +107,17 @@ if (!$medicationsResult) {
             background-color: #cccccc;
             cursor: not-allowed;
         }
+
+        a {
+            display: block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #4CAF50;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
     </style>
     <script>
         // Function to validate that at least one medication is selected
@@ -163,6 +174,7 @@ if (!$medicationsResult) {
                 <button type="submit" disabled>Dispense</button>
             <?php endif; ?>
         </form>
+        <a href="docmain.php">Back to Dashboard</a>
     </div>
 </body>
 </html>

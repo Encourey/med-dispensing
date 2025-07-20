@@ -1,4 +1,5 @@
-<!-- <?php
+<!-- UNUSED
+<?php
 session_start();
 // Include database connection
 include 'db_connect.php';

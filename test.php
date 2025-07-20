@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 $url = "http://localhost/logins/process_dispense_esp.php";
     $postData = [
         'patient_id' => 1,
@@ -23,4 +23,4 @@ $url = "http://localhost/logins/process_dispense_esp.php";
 
     curl_close($ch);
 
-?> 
+?>  -->

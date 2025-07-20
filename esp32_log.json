@@ -10,4 +10,10 @@
         "status": "failure",
         "message": "ESP32 Response Error: Dispense SUCCESS for multiple IDs"
     }
+][
+    {
+        "medication_id": "1",
+        "status": "failure",
+        "message": "Curl Error: Failed to connect to 192.168.1.51 port 80: Timed out"
+    }
 ]

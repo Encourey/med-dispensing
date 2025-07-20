@@ -138,13 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <label for="gender">Gender:</label>
             <input type="text" id="gender" name="gender" value="<?php echo htmlspecialchars($patient['gender']); ?>" required>
-
-            <label for="medication">Medication:</label>
-            <input type="text" id="medication" name="medication" value="<?php echo htmlspecialchars($patient['medication_name']); ?>">
-
-            <label for="dosage">Dosage:</label>
-            <input type="text" id="dosage" name="dosage" value="<?php echo htmlspecialchars($patient['dosage']); ?>">
-
+            
             <button type="submit">Update Patient Info</button>
         </form>
         <a href="docmain.php">Back to Dashboard</a>
