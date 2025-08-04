@@ -1,0 +1,271 @@
+/* Add spacing around the entire page */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7fa;
+  color: #333;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 30px;
+}
+
+header h2 {
+  margin: 0;
+  margin-right: 20px;
+  font-size: 1.6em;
+  font-weight: bold;
+  text-align: left;
+}
+
+.menu {
+  display: flex;
+  gap: 15px;
+  align: right;
+}
+
+.menu-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 2 em;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  /* Make text bold */
+}
+
+.menu-btn:hover {
+  background-color: #3a8b3c;
+}
+
+.section {
+  margin-top: 20px;
+}
+
+.status-container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  width: 300px;
+}
+
+.status {
+  font-size: 24px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+}
+
+.status-enabled {
+  color: #4CAF50;
+}
+
+.status-disabled {
+  color: #FF5722;
+}
+
+.status-checking {
+  color: #FF9800;
+}
+
+.status-message {
+  font-size: 16px;
+  color: #777;
+}
+
+.spinner {
+  margin-top: 10px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.status-checking .spinner {
+  visibility: visible;
+}
+
+.status-enabled .spinner,
+.status-disabled .spinner {
+  visibility: hidden;
+}
+
+.logout-btn {
+  padding: 8px 15px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+  color: #4CAF50;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.patient-info-table,
+.prescription-log-table,
+.med-info-table,
+.timed-medications-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.patient-info-table th,
+.patient-info-table td,
+.prescription-log-table th,
+.prescription-log-table td,
+.med-info-table th,
+.med-info-table td,
+.timed-medications-table th,
+.timed-medications-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 0.95em;
+  border-bottom: 1px solid #ddd;
+}
+
+.patient-info-table th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+.med-info-table th {
+  background-color: #e6f7e6;
+  color: #333;
+}
+
+.prescription-log-table th {
+  background-color: #e6f7e6;
+  color: #333;
+}
+
+.timed-medications-table th {
+  background-color: #e6f7e6;
+  color: #333
+}
+
+.patient-info-table tr:nth-child(even),
+.med-info-table tr:nth-child(even),
+.prescription-log-table tr:nth-child(even),
+.timed-medications-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.patient-info-table tr:hover,
+.med-info-table tr:hover,
+.prescription-log-table tr:hover,
+.timed-medications-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 8px 15px;
+  font-size: 0.9em;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+/* Change button colors */
+.dispense-btn,
+.edit-btn {
+  background-color: #45a049;
+}
+
+.dispense-btn:hover,
+.edit-btn:hover {
+  background-color: #3a8b3c;
+}
+
+.button-group2 {
+  display: flex;
+  gap: 10px;
+}
+
+.add-patient-btn,
+.add-timed-btn {
+  display: inline-block;
+  background-color: #4CAF50;
+  margin: 10px;
+}
+
+.add-meds-btn {
+  display: inline-block;
+  background-color: #4CAF50;
+  margin: 10px;
+}
+
+#timediv {
+  flex: 1;
+  /* Allocates space for time */
+  text-align: right;
+  /* Aligns time to the right */
+  font-size: 18px;
+  margin: 10px;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+#clock {
+  flex: 1;
+  /* Allocates space for time */
+  text-align: right;
+  /* Aligns time to the right */
+  font-size: 18px;
+  margin: 10px;
+}

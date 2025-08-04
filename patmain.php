@@ -1,173 +1,99 @@
 <?php
 session_start();
-if (!isset($_SESSION['patient_name'])) {
-    header("Location: index.php");
-    exit();  
-}
 include 'db_connect.php';
-?>
 
+if (!isset($_SESSION['patient_user'])) {
+    header("Location: index.php");
+    exit();
+}
+
+$patient_id = $_SESSION['patient_id'];
+$today = date("Y-m-d");
+
+// Fetch patient data
+$sql = "SELECT * FROM patient_data WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $patient_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$patient = $result->fetch_assoc();
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient's Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f7fa;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <title>Patient Dashboard</title>
+  <style>
+    body { font-family: Arial; background: #f4f7fa; margin: 0; padding: 0; }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px; background: #2e7d32; color: white;
+    }
+    .container { max-width: 1000px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 10px; }
+    h3 { text-align: center; font-size: 1.8em; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 1.2em; }
+    th, td { border: 1px solid #ccc; padding: 12px; text-align: center; }
+    th { background-color: #ffd54f; }
+    .logout-btn { background: #f44336; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+    .clock { font-size: 1.5em; font-weight: bold; }
+  </style>
+  <script>
+    setInterval(() => {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mi = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      const dateStr = `${dd}/${mm}/${yyyy}`;
+      const timeStr = `${hh}:${mi}:${ss}`;
+      document.getElementById('clock').innerText = `${dateStr} ${timeStr}`;
+    }, 1000);
 
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 0;
-            text-align: center;
-        }
+    function refreshTable() {
+        fetch('load_table.php')
+            .then(response => response.text())
+            .then(html => {
+            document.getElementById('med-table-body').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to fetch table rows:', err));
+    }
+    // Initial load
+    refreshTable();
+    // Refresh every 10 seconds
+    setInterval(refreshTable, 10000);
 
-        header h2 {
-            margin: 0;
-            font-size: 1.8em;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .container h3 {
-            color: #4CAF50;
-            font-size: 1.4em;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table th, table td {
-            padding: 12px;
-            text-align: left;
-        }
-
-        table th {
-            background-color: #f2f2f2;
-            color: #333;
-        }
-
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        table td {
-            border-bottom: 1px solid #ddd;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-size: 0.9em;
-            border-radius: 4px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            header h2 {
-                font-size: 1.5em;
-            }
-
-            table th, table td {
-                font-size: 0.9em;
-            }
-        }
-    </style>
+  </script>
 </head>
 <body>
-
-    <header>
-        <h2>Welcome, <?php echo htmlspecialchars($_SESSION['patient_name']); ?></h2>
-    </header>
-
-    <div class="container">
-        <h3>Patient Information</h3>
-        <table>
+<header>
+  <div>Welcome, <?= htmlspecialchars($_SESSION['patient_name']) ?> (ID: <?= $patient_id ?>)</div>
+  <div style="display:flex; align-items:center; gap:15px">
+    <div id="clock" class="clock"></div>
+    <form action="logout.php" method="post"><button class="logout-btn">Logout</button></form>
+  </div>
+</header>
+<div class="container">
+  <h3>💊 Today's Medication Schedule</h3>
+  <div id="med-table">
+    <table>
+        <thead>
             <tr>
-                <th>Patient ID</th>
-                <th>Patient Name</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Medication</th>
-                <th>Dosage</th>
+            <th>Medication</th>
+            <th>Dosage</th>
+            <th>Meal Time</th>
+            <th>Time</th>
+            <th>Status</th>
             </tr>
-
-            <?php
-            $sql = "SELECT * FROM patient_data"; 
-            $result = $conn->query($sql);  
-
-            if ($result === false) {
-                echo "Error executing query: " . $conn->error;
-            } else {
-                if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
-                        echo "<tr>
-                                <td>" . $row["id"] . "</td>
-                                <td>" . $row["patient_name"] . "</td>
-                                <td>" . $row["age"] . "</td>
-                                <td>" . $row["gender"] . "</td>
-                                <td>" . ($row["medication"] ?: 'No medication assigned') . "</td>
-                                <td>" . ($row["dosage"] ?: 'N/A') . "</td>
-                              </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='7'>No patient records found</td></tr>";
-                }
-            }
-
-            $conn->close();
-            ?>
-        </table>
-    </div>
-
-    <footer>
-        <a href="logout.php">Logout</a>
-    </footer>
-
+        </thead>
+        <tbody id="med-table-body">
+            <!-- Rows will be injected here -->
+        </tbody>
+    </table>
+  </div>
+</div>
 </body>
 </html>

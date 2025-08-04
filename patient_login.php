@@ -2,26 +2,36 @@
 session_start();
 include 'db_connect.php';
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
-    $password = $_POST['password'];
+    $input_password = $_POST['password'];
 
-    $sql = "SELECT * FROM patients WHERE patient_name = ? AND password = ?";
+    // ดึงข้อมูลผู้ป่วยจากฐานข้อมูลด้วย username
+    $sql = "SELECT * FROM `patient_data` 
+            LEFT JOIN `patients` ON `patient_data`.`id` = `patients`.`patient_id` 
+            WHERE patient_user = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $username, $password); // Bind parameters to prevent SQL injection
+    $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // ตรวจสอบว่าพบผู้ใช้หรือไม่
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $_SESSION['patient_name'] = $row['patient_name'];  
 
-        // Redirect to the dashboard page
-        header("Location: patient_dashboard.php");
-        exit();  // Ensure no further code runs after the redirect
+        // ตรวจสอบรหัสผ่านด้วย password_verify
+        if (password_verify($input_password, $row['password'])) {
+            $_SESSION['patient_user'] = $row['patient_user'];
+            $_SESSION['patient_id'] = $row['patient_id'];
+            $_SESSION['patient_name'] = $row['patient_name'];
+
+            header("Location: patient_dashboard.php");
+            exit();
+        } else {
+            echo "❌ Incorrect password.";
+        }
     } else {
-        echo "Patient username or password is incorrect.";
+        echo "❌ Username not found.";
     }
 }
 ?>

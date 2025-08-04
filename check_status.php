@@ -1,6 +1,6 @@
 <?php
 // ESP32 IP address
-$esp32_ip = "http://192.168.1.51/status"; // Replace with your ESP32's IP address
+$esp32_ip = "http://192.168.4.180/status"; // Replace with your ESP32's IP address
 
 // Use cURL to send a request to the ESP32
 $ch = curl_init($esp32_ip);
