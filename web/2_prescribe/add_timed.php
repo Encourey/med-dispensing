@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result_medication->num_rows > 0) {
             // Get the actual dosage from the database
             $row = $result_medication->fetch_assoc();
-            $actual_dosage = $row['dosage'];
+            $actual_dosage = $row['mgpdosage'];
 
             // Calculate the custom dosage as the multiplier * actual dosage
             $custom_dosage = $actual_dosage * $custom_multiplier;

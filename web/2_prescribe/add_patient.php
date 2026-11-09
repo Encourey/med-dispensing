@@ -74,16 +74,34 @@ if (isset($_POST['timing_3'])) {
 
 
     
-    if ($stmt->execute()) {
-        // Add to patients table
-        $sql2 = "INSERT INTO patients (patient_user, password) VALUES (?, ?)";
+    // The login username must be unique
+    $dup = $conn->prepare("SELECT 1 FROM patients WHERE patient_user = ?");
+    $dup->bind_param("s", $patient_user);
+    $dup->execute();
+    $dup->store_result();
+    if ($dup->num_rows > 0) {
+        echo "That patient username is already taken. Go back and choose another.";
+        exit();
+    }
+    $dup->close();
+
+    // patient_data and patients must be created together, with the SAME id
+    $conn->begin_transaction();
+    try {
+        $stmt->execute();
+        $new_patient_id = $conn->insert_id;
+
+        $sql2 = "INSERT INTO patients (patient_id, patient_user, password) VALUES (?, ?, ?)";
         $stmt2 = $conn->prepare($sql2);
-        $stmt2->bind_param("ss", $patient_user, $password);
+        $stmt2->bind_param("iss", $new_patient_id, $patient_user, $password);
         $stmt2->execute();
 
+        $conn->commit();
         header("Location: ../6_dashboards/docmain.php");
         exit();
-    } else {
+    } catch (mysqli_sql_exception $e) {
+        $conn->rollback();
+        error_log('add_patient failed: ' . $e->getMessage());
         echo "Error adding patient information.";
     }
 }

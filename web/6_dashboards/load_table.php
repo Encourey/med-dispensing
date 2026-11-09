@@ -46,7 +46,8 @@ $disp_stmt->execute();
 $disp_result = $disp_stmt->get_result();
 
 while ($row = $disp_result->fetch_assoc()) {
-    if ($row['response_message'] === 'Dispense SUCCESS') {
+    // Logged messages vary: 'success', 'Dispense SUCCESS', 'Dispense SUCCESS from ESP', ...
+    if (preg_match('/^(dispense )?success/i', (string)$row['response_message'])) {
         $key = $row['dispense_time_label'] . '_' . $row['dispense_time'];
         $dispensed_today[$key] = true;
     }

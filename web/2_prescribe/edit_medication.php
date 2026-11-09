@@ -35,12 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $medication_name = $_POST['medication_name'];
     $mgpdosage = $_POST['mgpdosage'];
 
-    $sql = "UPDATE medication SET medication_name = ?, mgpdosage = ? WHERE medication_id = ?";
+    $sql = "UPDATE medications SET medication_name = ?, mgpdosage = ? WHERE medication_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sii", $medication_name, $mgpdosage, $medication_id);
 
     if ($stmt->execute()) {
-        header("Location: ../6_dashboards/patmain.php"); // Redirect to dashboard
+        header("Location: ../6_dashboards/docmain.php"); // Redirect to dashboard
         exit();
     } else {
         echo "Error updating medication information.";
