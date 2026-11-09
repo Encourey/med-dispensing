@@ -166,7 +166,6 @@ include __DIR__ . '/../config/db_connect.php';
                     <th>Action</th>
                 </tr>
                 <?php
-                include __DIR__ . '/../config/db_connect.php'; // Ensure database connection
 
                 // Base SQL query
                 $sql = "SELECT dispensations.*, patient_data.patient_name, doctors.doctor_name 

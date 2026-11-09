@@ -3,5 +3,7 @@ web/5_logging/logs/*
 !web/5_logging/logs/.gitkeep
 
 # real credentials (commit the *.example.* versions instead)
-web/config/db_connect.php
 firmware/**/config.h
+
+# local DB credentials (copy config.example.php -> config.local.php)
+web/config/config.local.php
