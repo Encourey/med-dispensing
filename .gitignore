@@ -1,0 +1,7 @@
+# runtime logs
+web/5_logging/logs/*
+!web/5_logging/logs/.gitkeep
+
+# real credentials (commit the *.example.* versions instead)
+web/config/db_connect.php
+firmware/**/config.h
