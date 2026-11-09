@@ -2,10 +2,10 @@
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if (!isset($_SESSION['doctor_name'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $patient_id
     );
     if ($stmt->execute()) {
-        header("Location: docmain.php");
+        header("Location: ../6_dashboards/docmain.php");
         exit();
     } else {
         echo "Error updating patient.";
@@ -172,7 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php } ?>
 
     <button type="submit">Update Patient Info</button>
-    <a href="docmain.php">Back to Dashboard</a>
+    <a href="../6_dashboards/docmain.php">Back to Dashboard</a>
   </form>
 
 </div>

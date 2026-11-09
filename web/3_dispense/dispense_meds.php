@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if (!isset($_SESSION['doctor_id'])) {
     echo "Doctor ID not set in session. Redirecting to login...";
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -113,7 +113,7 @@ usort($medications, fn($a, $b) => strcmp($a['time'], $b['time']));
     </table>
     <button type="submit">Dispense Selected Medications</button>
   </form>
-  <a href="docmain.php">Back to Dashboard</a>
+  <a href="../6_dashboards/docmain.php">Back to Dashboard</a>
 </div>
 </body>
 </html>

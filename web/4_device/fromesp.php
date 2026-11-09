@@ -1,5 +1,5 @@
 <?php
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 header('Content-Type: application/json');
 // ตรวจสอบว่า Request Method เป็น POST หรือไม่

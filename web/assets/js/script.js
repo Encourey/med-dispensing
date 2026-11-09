@@ -35,7 +35,7 @@ function searchPatient() {
     const searchTerm = document.getElementById("search").value;
     const xhr = new XMLHttpRequest();
 
-    xhr.open("GET", "search_patient.php?search=" + encodeURIComponent(searchTerm), true);
+    xhr.open("GET", "../2_prescribe/search_patient.php?search=" + encodeURIComponent(searchTerm), true);
 
     xhr.onerror = function () {
         console.error("Request failed");
@@ -62,7 +62,7 @@ function searchPrescription() {
   console.log("Searching prescriptions for:", patientName); // Debugging line to verify input
 
   const xhr = new XMLHttpRequest();
-  xhr.open("GET", "search_prescript.php?search=" + encodeURIComponent(patientName), true); // Send only patient_name
+  xhr.open("GET", "../2_prescribe/search_prescript.php?search=" + encodeURIComponent(patientName), true); // Send only patient_name
 
   xhr.onerror = function () {
     console.error("Request failed");
@@ -88,7 +88,7 @@ async function checkStatus() {
   const dispenseButtons = document.querySelectorAll('.dispense-btn');
 
   try {
-    const response = await fetch('check_status.php');
+    const response = await fetch('../4_device/check_status.php');
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
     const data = await response.json();

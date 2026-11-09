@@ -1,5 +1,5 @@
 <?php
-include 'db_connect.php'; // Ensure database connection
+include __DIR__ . '/../config/db_connect.php'; // Ensure database connection
 
 // Retrieve the search term from the AJAX request
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
@@ -50,7 +50,7 @@ if ($result->num_rows > 0) {
                 <td>Dr. {$row['doctor_name']}</td>
                 <td>{$row['dispense_date']}</td>
                 <td>
-                    <form action='delete_prescription.php' method='POST' style='display: inline;' onsubmit='return confirmDelete();'>
+                    <form action='../2_prescribe/delete_prescription.php' method='POST' style='display: inline;' onsubmit='return confirmDelete();'>
                         <input type='hidden' name='dispense_id' value='{$row['dispense_id']}'>
                         <button type='submit' class='delete-button'>Delete</button>
                     </form>

@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 // Check if the doctor is logged in
 if (!isset($_SESSION['doctor_name'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -18,7 +18,7 @@ if (isset($_POST['dispense_id'])) {
     $stmt->bind_param("i", $dispense_id);
 
     if ($stmt->execute()) {
-        header("Location: doctor_dashboard.php");  // Redirect back to the dashboard after deletion
+        header("Location: ../6_dashboards/doctor_dashboard.php");  // Redirect back to the dashboard after deletion
         exit();
     } else {
         echo "Error deleting prescription entry.";

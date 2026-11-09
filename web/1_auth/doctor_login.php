@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_regenerate_id(true);
 
         // Redirect to doctor dashboard
-        header("Location: docmain.php");
+        header("Location: ../6_dashboards/docmain.php");
         exit();
     } else {
         echo "Invalid login credentials.";
         
-        header("Location: index.php");
+        header("Location: ../index.php");
     }
     $stmt->close();
 }

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if (!isset($_SESSION['patient_user'])) {
     exit("Unauthorized");

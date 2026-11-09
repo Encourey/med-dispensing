@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if (!isset($_SESSION['patient_user'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -73,7 +73,7 @@ $patient = $result->fetch_assoc();
   <div>Welcome, <?= htmlspecialchars($_SESSION['patient_name']) ?> (ID: <?= $patient_id ?>)</div>
   <div style="display:flex; align-items:center; gap:15px">
     <div id="clock" class="clock"></div>
-    <form action="logout.php" method="post"><button class="logout-btn">Logout</button></form>
+    <form action="../1_auth/logout.php" method="post"><button class="logout-btn">Logout</button></form>
   </div>
 </header>
 <div class="container">

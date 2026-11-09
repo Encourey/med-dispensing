@@ -37,7 +37,7 @@ const char* password = "1234567890";
 
 // Endpoints
 const char* ESPB_URL = "http://192.168.4.186/servo";
-const char* logUrl   = "http://192.168.4.167/logins/process_dispense_esp.php";
+const char* logUrl   = "http://192.168.4.167/logins/5_logging/process_dispense_esp.php";
 
 // Server for status
 WebServer server(80);

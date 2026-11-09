@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if (!isset($_SESSION['doctor_id'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -83,8 +83,8 @@ $updatePatient->execute();
 $updatePatient->close();
 
 $_SESSION['dispense_responses'] = $responseLog;
-file_put_contents("esp32_log.json", json_encode($responseLog, JSON_PRETTY_PRINT), FILE_APPEND);
+file_put_contents(__DIR__ . '/../5_logging/logs/esp32_log.json', json_encode($responseLog, JSON_PRETTY_PRINT), FILE_APPEND);
 
-header("Location: docmain.php?dispense=success");
+header("Location: ../6_dashboards/docmain.php?dispense=success");
 exit();
 ?>

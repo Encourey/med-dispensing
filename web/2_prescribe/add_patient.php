@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 // Check if the doctor is logged in
 if (!isset($_SESSION['doctor_name'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -81,7 +81,7 @@ if (isset($_POST['timing_3'])) {
         $stmt2->bind_param("ss", $patient_user, $password);
         $stmt2->execute();
 
-        header("Location: docmain.php");
+        header("Location: ../6_dashboards/docmain.php");
         exit();
     } else {
         echo "Error adding patient information.";
@@ -315,7 +315,7 @@ if (isset($_POST['timing_3'])) {
 
       <button type="submit">Add Patient Info</button>
     </form>
-    <a href="docmain.php">Back to Dashboard</a>
+    <a href="../6_dashboards/docmain.php">Back to Dashboard</a>
   </div>
 
   <script>

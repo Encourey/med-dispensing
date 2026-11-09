@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['patient_id'] = $row['patient_id'];
             $_SESSION['patient_name'] = $row['patient_name'];
 
-            header("Location: patient_dashboard.php");
+            header("Location: ../6_dashboards/patient_dashboard.php");
             exit();
         } else {
             echo "❌ Incorrect password.";

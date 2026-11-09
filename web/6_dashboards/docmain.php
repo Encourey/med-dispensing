@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['doctor_name'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 ?>
 
 <!DOCTYPE html>
@@ -14,8 +14,8 @@ include 'db_connect.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <script src="../assets/js/script.js"></script>
 </head>
 
 <body>
@@ -33,7 +33,7 @@ include 'db_connect.php';
             
         </div>
         
-        <a href="logout.php">
+        <a href="../1_auth/logout.php">
             <button class="logout-btn">Logout</button>
         </a>
     </header>
@@ -77,15 +77,15 @@ include 'db_connect.php';
                                     <td>{$row['age']}</td>
                                     <td>{$row['gender']}</td>
                                     <td class='button-group'>
-                                        <form action='dispense_meds.php' method='POST' style='display: inline;'>
+                                        <form action='../3_dispense/dispense_meds.php' method='POST' style='display: inline;'>
                                             <input type='hidden' name='patient_id' value='{$row['id']}'>
                                             <button type='submit' class='dispense-btn' disabled style='opacity: 0.5; cursor: not-allowed;'>Dispense Medication</button>
                                         </form>
-                                        <form action='edit_patient.php' method='GET' style='display: inline;'>
+                                        <form action='../2_prescribe/edit_patient.php' method='GET' style='display: inline;'>
                                             <input type='hidden' name='id' value='{$row['id']}'>
                                             <button type='submit' class='edit-btn'>Edit</button>
                                         </form>
-                                        <form action='edit_patient_changepassword.php' method='GET' style='display: inline; margin-left: 5px;'>
+                                        <form action='../1_auth/edit_patient_changepassword.php' method='GET' style='display: inline; margin-left: 5px;'>
                                             <input type='hidden' name='id' value='{$row['id']}'>
                                             <button type='submit' class='edit-btn' style='background-color: #f57c00;'>Change Password</button>
                                         </form>
@@ -100,7 +100,7 @@ include 'db_connect.php';
             </table>
 
             <div class="button-group2">
-                <form action="add_patient.php" style='display: inline'>
+                <form action="../2_prescribe/add_patient.php" style='display: inline'>
                     <button class="add-patient-btn">Add New Patient</button>
                 </form>
             </div>
@@ -134,7 +134,7 @@ include 'db_connect.php';
                                     <td>{$row['medication_name']}</td>
                                     <td>{$row['mgpdosage']} mg</td>
                                     <td class='button-group'>
-                                        <form action='edit_medication.php' method='GET' style='display: inline;'>
+                                        <form action='../2_prescribe/edit_medication.php' method='GET' style='display: inline;'>
                                             <input type='hidden' name='id' value='{$row['medication_id']}'>
                                             <button type='submit' class='edit-btn'>Edit</button>
                                         </form>
@@ -166,7 +166,7 @@ include 'db_connect.php';
                     <th>Action</th>
                 </tr>
                 <?php
-                include 'db_connect.php'; // Ensure database connection
+                include __DIR__ . '/../config/db_connect.php'; // Ensure database connection
 
                 // Base SQL query
                 $sql = "SELECT dispensations.*, patient_data.patient_name, doctors.doctor_name 
@@ -189,7 +189,7 @@ include 'db_connect.php';
                                 <td>{$row['dispense_time']}</td>
                                 <td>{$row['response_message']}</td>
                                 <td>
-                                    <form action='delete_prescription.php' method='POST' style='display: inline;' onsubmit='return confirmDelete();'>
+                                    <form action='../2_prescribe/delete_prescription.php' method='POST' style='display: inline;' onsubmit='return confirmDelete();'>
                                         <input type='hidden' name='dispense_id' value='{$row['dispense_id']}'>
                                         <button type='submit' class='delete-button'>Delete</button>
                                     </form>
@@ -239,7 +239,7 @@ include 'db_connect.php';
                 ?>
             </table>
             <td class='button-group2'>
-                <form action="add_timed.php" style='display: inline'>
+                <form action="../2_prescribe/add_timed.php" style='display: inline'>
                     <button class="add-timed-btn">Add New Timed Medications</button>
                 </form>
             </td>

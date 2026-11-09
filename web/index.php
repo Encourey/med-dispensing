@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/config/db_connect.php';
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +84,7 @@ include 'db_connect.php';
     <h1 id="login-title">Doctor Login</h1>
 
     <!-- Doctor Login Form -->
-    <form id="doctor-login-form" method="POST" action="doctor_login.php" class="login-form">
+    <form id="doctor-login-form" method="POST" action="1_auth/doctor_login.php" class="login-form">
       <label for="doctor-username">Username:</label>
       <input type="text" id="doctor-username" name="username" required><br>
 
@@ -95,7 +95,7 @@ include 'db_connect.php';
     </form>
 
     <!-- Patient Login Form -->
-    <form id="patient-login-form" method="POST" action="patient_login.php" class="login-form" style="display: none;">
+    <form id="patient-login-form" method="POST" action="1_auth/patient_login.php" class="login-form" style="display: none;">
       <label for="patient-username">Username:</label>
       <input type="text" id="patient-username" name="username" required><br>
 

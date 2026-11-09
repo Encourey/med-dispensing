@@ -1,5 +1,5 @@
 <!-- <?php
-$url = "http://localhost/logins/process_dispense_esp.php";
+$url = "http://localhost/logins/5_logging/process_dispense_esp.php";
     $postData = [
         'patient_id' => 1,
         'medication_id' => [2,3,5],

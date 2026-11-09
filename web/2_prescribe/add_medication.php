@@ -2,7 +2,7 @@
 <?php
 session_start();
 // Include database connection
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $medication_name = $_POST['medication_name'];
@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Add Medication</button>
     </form>
-    <a href="doctor_dashboard.php">Back to Dashboard</a>
+    <a href="../6_dashboards/doctor_dashboard.php">Back to Dashboard</a>
     </div>
 </body>
 </html> -->

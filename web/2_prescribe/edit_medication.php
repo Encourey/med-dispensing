@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'db_connect.php';
+include __DIR__ . '/../config/db_connect.php';
 
 // Check if the doctor is logged in
 if (!isset($_SESSION['doctor_name'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sii", $medication_name, $mgpdosage, $medication_id);
 
     if ($stmt->execute()) {
-        header("Location: patmain.php"); // Redirect to dashboard
+        header("Location: ../6_dashboards/patmain.php"); // Redirect to dashboard
         exit();
     } else {
         echo "Error updating medication information.";
@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <button type="submit">Update Medication</button>
         </form>
-        <a href="docmain.php">Back to Dashboard</a>
+        <a href="../6_dashboards/docmain.php">Back to Dashboard</a>
     </div>
 </body>
 </html>
