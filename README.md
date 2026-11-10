@@ -10,7 +10,6 @@ MEDI-SERVE joins three worlds into one working system: **programming** (a web ap
 |---|---|
 | **Author** | Runch Rachapattayakhom |
 | **Institution** | Yothinburana |
----
 
 ## How it works
 
