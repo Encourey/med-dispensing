@@ -11,6 +11,8 @@ MEDI-SERVE joins three worlds into one working system: **programming** (a web ap
 | **Author** | Runch Rachapattayakhom |
 | **Institution** | Yothinburana |
 
+---
+
 ## How it works
 
 The system is a pipeline. A request starts in the browser, is validated and stored by the server, and ends as a servo movement; the result then flows back into the database.
@@ -115,6 +117,32 @@ An unrecognised card shows `Unknown Card / Access Denied` and nothing is dispens
 | Firmware | Arduino C++ on ESP32 |
 | Firmware libraries | `MFRC522`, `LiquidCrystal_I2C`, `ArduinoJson`, `ESP32Servo`, `ESPAsyncWebServer` (with `AsyncTCP`), `WebServer`, `HTTPClient` |
 | Protocol | HTTP over the local WiFi network, JSON payloads |
+
+---
+
+## Engineering highlights
+
+| Challenge | What was built | Why it matters |
+|---|---|---|
+| **Two triggers, one actuator** | A doctor's click on the dashboard and a patient's RFID tap both end in the same servo routine on ESP32-B, over plain HTTP (`POST /dispense` and `GET /servo`). | The hardware has a single code path to test, and each board's sketch stays small. HTTP is easy to debug with a browser or `curl` and needs no broker. |
+| **Capacity cannot be exceeded** | The 8-medication limit is a database trigger (`limit_entries`), not a check in a PHP page. | It holds no matter which page, script or manual query adds a row. |
+| **No commands to an offline machine** | The dashboard polls the reader board through `check_status.php` and disables the dispense buttons when the machine is unreachable. | A doctor cannot trigger a dispense that will silently fail. |
+| **Linked records cannot drift apart** | Creating a patient inserts the record and the login in one transaction that shares a single id, and rejects duplicate usernames. | Verified by deliberately knocking the two auto-increment counters out of sync: the ids still matched. |
+| **Safer passwords without locking anyone out** | Passwords use `password_hash()`. Older plaintext doctor passwords are accepted once and replaced by a hash at that doctor's next login. The ESP32 service account (id 99) can never sign in. | Existing accounts keep working while the stored data gets safer. |
+| **The log keeps its history** | `dispensations` deliberately has no foreign keys. | Removing a patient or doctor never erases what was dispensed. |
+| **Three generations of logs, one dashboard** | The development log holds three different success messages written by successive versions of the app and firmware. The patient view recognises all of them. | Older entries still show correctly as *Taken*. |
+| **A reproducible database** | `database/schema.sql` was rebuilt from the original database dump and compared column by column against it, with four deliberate additions (three `UNIQUE` keys and one index). | Anyone can recreate the database from scratch and get the same structure. |
+
+### Measured results
+
+_Fill these in from the real machine; they make the highlights above concrete._
+
+| Measurement | Result |
+|---|---|
+| Button press to servo movement (web dispense) | _TODO_ ms |
+| RFID tap to servo movement | _TODO_ ms |
+| Successful dispenses out of attempts | _TODO_ / _TODO_ |
+| Time to detect an offline machine on the dashboard | _TODO_ s |
 
 ---
 
@@ -287,17 +315,6 @@ Doctor `99` is a reserved service account: the ESP32 boards log their dispenses 
 
 ---
 
-## Design decisions
-
-- **Two boards, two jobs.** Splitting the RFID/LCD interface from the servo controller keeps each sketch small, lets the web app address the actuator directly, and means a card scan and a web request use exactly the same dispense endpoint.
-- **Plain HTTP between devices.** On a trusted local network, simple GET/POST requests are easy to debug with a browser or `curl`, and need no broker. The trade-off is no encryption (see below).
-- **The database enforces its own rules.** The 8-medication limit is a trigger, and creating a patient inserts the patient record and the login in one transaction with a shared id, so the two tables cannot drift apart.
-- **The dispense log keeps its history.** `dispensations` has no foreign keys on purpose, so removing a patient or doctor row never cascades into the log.
-- **Passwords are hashed.** Patient and doctor passwords use `password_hash()`. Older plaintext doctor passwords are upgraded automatically the first time that doctor signs in.
-- **The schema is reproducible.** `database/schema.sql` rebuilds the database from scratch, and the whole application was checked against it with scripted end-to-end tests.
-
----
-
 ## Known limitations and roadmap
 
 - Traffic between the browser, server and ESP32 boards is unencrypted HTTP with no device authentication; it is intended for a closed local network.
@@ -309,10 +326,6 @@ Doctor `99` is a reserved service account: the ESP32 boards log their dispenses 
 - Doctors can delete individual rows from the prescription log tab; there is no separate audit trail yet.
 
 ---
-
-## Acknowledgements
-
-_Add supervisors, lab, teammates and any tutorials or libraries you want to credit._
 
 ## License
 
