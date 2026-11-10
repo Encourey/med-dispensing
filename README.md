@@ -6,7 +6,6 @@ MEDI-SERVE joins three worlds into one working system: **programming** (a web ap
 
 <!-- TODO: add a photo or GIF of the machine here, e.g. docs/images/machine.jpg -->
 
-| | |
 |---|---|
 | **Author** | Runch Rachapattayakhom |
 | **Institution** | Yothinburana |
