@@ -1,5 +1,7 @@
 # MEDI-SERVE
 
+**English** | [ไทย](README.TH.md)
+
 **Medical Service Extension** — a web-connected medicine dispensing machine built with ESP32 microcontrollers, a PHP + MySQL web application, and servo-driven hardware.
 
 MEDI-SERVE joins three worlds into one working system: **programming** (a web app and embedded firmware), **databases** (prescriptions, schedules and an audit log), and **IoT** (two ESP32 boards talking to the web server over WiFi). A doctor can prescribe and dispense from a browser, and a patient can collect their medicine by tapping an RFID card on the machine.
@@ -132,42 +134,6 @@ An unrecognised card shows `Unknown Card / Access Denied` and nothing is dispens
 | **The log keeps its history** | `dispensations` deliberately has no foreign keys. | Removing a patient or doctor never erases what was dispensed. |
 | **Three generations of logs, one dashboard** | The development log holds three different success messages written by successive versions of the app and firmware. The patient view recognises all of them. | Older entries still show correctly as *Taken*. |
 | **A reproducible database** | `database/schema.sql` was rebuilt from the original database dump and compared column by column against it, with four deliberate additions (three `UNIQUE` keys and one index). | Anyone can recreate the database from scratch and get the same structure. |
-
-### Measured results
-
-_Fill these in from the real machine; they make the highlights above concrete._
-
-| Measurement | Result |
-|---|---|
-| Button press to servo movement (web dispense) | _TODO_ ms |
-| RFID tap to servo movement | _TODO_ ms |
-| Successful dispenses out of attempts | _TODO_ / _TODO_ |
-| Time to detect an offline machine on the dashboard | _TODO_ s |
-
----
-
-## Hardware
-
-| Part | Quantity | Notes |
-|---|---|---|
-| ESP32 dev board | 2 | **A** = reader and display, **B** = servo controller |
-| MFRC522 RFID reader + tags | 1 reader, 3 tags | One tag per demo patient/slot |
-| 16×2 I²C LCD | 1 | Address `0x27` |
-| Servo motors | 3 | One per medicine slot, rest at 90°, dispense at 180° |
-| Power supply, wiring, enclosure | — | _add details and photos_ |
-
-**Pin map**
-
-| Board | Signal | Pin |
-|---|---|---|
-| ESP32-A | RFID SS (SDA) | GPIO 5 |
-| ESP32-A | RFID RST | GPIO 34 |
-| ESP32-A | LCD SDA / SCL | GPIO 21 / 22 |
-| ESP32-B | Servo 1 / 2 / 3 | GPIO 25 / 26 / 27 |
-
-<!-- TODO: add a wiring diagram, e.g. docs/images/wiring.png -->
-
----
 
 ## Repository structure
 
