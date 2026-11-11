@@ -329,4 +329,4 @@ Doctor `99` is a reserved service account: the ESP32 boards log their dispenses 
 
 ## License
 
-_Choose a license (for example MIT) and add a `LICENSE` file._
+MIT License Copyright (c) 2026 Runch Rachapattayakhom
