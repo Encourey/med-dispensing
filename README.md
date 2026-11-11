@@ -104,7 +104,7 @@ An unrecognised card shows `Unknown Card / Access Denied` and nothing is dispens
 - **RFID dispensing** with LCD feedback and access denial for unknown cards.
 - **Full dispense log.** Every dispense records who, what, how much, when, and what the hardware answered.
 - **Daily adherence view.** Patients see each of today's doses as *Taken* or *Pending*.
-- **Safety limit in the database.** A trigger refuses to add more than 8 medication types, matching what the machine can physically hold.
+- **Safety limit in the database.** Database-level capacity restriction prevents the medication catalogue from exceeding eight medication types. The physical dispenser currently supports three dispensing slots.
 
 ---
 
