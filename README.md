@@ -127,7 +127,7 @@ An unrecognised card shows `Unknown Card / Access Denied` and nothing is dispens
 | Challenge | What was built | Why it matters |
 |---|---|---|
 | **Two triggers, one actuator** | A doctor's click on the dashboard and a patient's RFID tap both end in the same servo routine on ESP32-B, over plain HTTP (`POST /dispense` and `GET /servo`). | The hardware has a single code path to test, and each board's sketch stays small. HTTP is easy to debug with a browser or `curl` and needs no broker. |
-| **Capacity cannot be exceeded** | The 8-medication limit is a database trigger (`limit_entries`), not a check in a PHP page. | It holds no matter which page, script or manual query adds a row. |
+| **Capacity cannot be exceeded** | The medication limit is a database trigger (`limit_entries`), not a check in a PHP page. | It holds no matter which page, script or manual query adds a row. |
 | **No commands to an offline machine** | The dashboard polls the reader board through `check_status.php` and disables the dispense buttons when the machine is unreachable. | A doctor cannot trigger a dispense that will silently fail. |
 | **Linked records cannot drift apart** | Creating a patient inserts the record and the login in one transaction that shares a single id, and rejects duplicate usernames. | Verified by deliberately knocking the two auto-increment counters out of sync: the ids still matched. |
 | **Safer passwords without locking anyone out** | Passwords use `password_hash()`. Older plaintext doctor passwords are accepted once and replaced by a hash at that doctor's next login. The ESP32 service account (id 99) can never sign in. | Existing accounts keep working while the stored data gets safer. |
